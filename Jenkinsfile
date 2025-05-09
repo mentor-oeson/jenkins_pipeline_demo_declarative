@@ -2,22 +2,16 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main', url: 'https://github.com/YOUR-USERNAME/your-repo.git'
-            }
-        }
-
         stage('Build') {
             steps {
-                echo 'Running build script...'
+                echo 'Running build...'
                 sh './build.sh'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running test script...'
+                echo 'Running tests...'
                 sh './test.sh'
             }
         }
