@@ -9,12 +9,13 @@ pipeline {
     stages {
         // stage('Clone Repository') {
         //     steps {
-        //         git 'https://github.com/your-username/your-repo.git' // Already cloned, so skipping
+        //         git 'https://github.com/mentor-oeson/jenkins_pipeline_demo_declarative.git'
         //     }
         // }
 
         stage('Build Docker Image') {
             steps {
+                echo '🔨 Building Docker image...'
                 script {
                     dockerImage = docker.build("${IMAGE_NAME}:latest", ".")
                 }
@@ -23,15 +24,14 @@ pipeline {
 
         stage('Run Container (Test)') {
             steps {
+                echo '🚀 Running test container...'
                 script {
-                    // Stop and remove container if it exists
                     sh """
-                    if [ \$(docker ps -aq -f name=${CONTAINER_NAME}) ]; then
+                    if [ "\$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
+                        echo "🧹 Removing existing container..."
                         docker rm -f ${CONTAINER_NAME}
                     fi
                     """
-
-                    // Run container mapping port 8081 to 80 inside container
                     dockerImage.run("-d -p 8081:80 --name ${CONTAINER_NAME}")
                 }
             }
@@ -39,19 +39,21 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                echo 'Add your deployment steps here'
+                echo '📦 Deployment step placeholder (add your logic here)'
             }
         }
     }
 
     post {
         always {
-            echo 'Cleaning up...'
-            sh """
-            if [ \$(docker ps -aq -f name=${CONTAINER_NAME}) ]; then
-                docker rm -f ${CONTAINER_NAME}
-            fi
-            """
+            echo '🧼 Cleanup...'
+            script {
+                sh """
+                if [ "\$(docker ps -aq -f name=${CONTAINER_NAME})" ]; then
+                    docker rm -f ${CONTAINER_NAME}
+                fi
+                """
+            }
         }
     }
 }
