@@ -9,7 +9,7 @@ pipeline {
     }
 
     stages {
-        stage('🔍 Workspace Check') {
+        stage("🔍 Workspace Check") {
             steps {
                 echo '📁 Checking workspace contents...'
                 sh 'ls -la'
@@ -17,7 +17,7 @@ pipeline {
             }
         }
 
-        stage('🧼 Cleanup') {
+        stage("🧼 Cleanup") {
             steps {
                 echo '🧹 Cleaning up any old container...'
                 sh '''
@@ -28,7 +28,7 @@ pipeline {
             }
         }
 
-        stage('🔨 Build Docker Image') {
+        stage("🔨 Build Docker Image") {
             steps {
                 echo "🔨 Building Docker image..."
                 script {
@@ -37,4 +37,22 @@ pipeline {
             }
         }
 
-        stage('🚀
+        stage("🚀 Deploy") {
+            steps {
+                echo "🚀 Running container from built image..."
+                sh """
+                    docker run -d \
+                        --name $CONTAINER_NAME \
+                        -p $HOST_PORT:$CONTAINER_PORT \
+                        $IMAGE_NAME:latest
+                """
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "✅ Pipeline completed!"
+        }
+    }
+}
