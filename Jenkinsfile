@@ -9,17 +9,17 @@ pipeline {
     }
 
     stages {
-        stage("🔍 Workspace Check") {
+        stage("Workspace Check") {
             steps {
-                echo '📁 Checking workspace contents...'
+                echo 'Checking workspace contents...'
                 sh 'ls -la'
-                sh 'ls -la website || echo "❌ website folder not found!"'
+                sh 'ls -la website || echo "website folder not found!"'
             }
         }
 
-        stage("🧼 Cleanup") {
+        stage("Cleanup") {
             steps {
-                echo '🧹 Cleaning up any old container...'
+                echo 'Cleaning up any old container...'
                 sh '''
                     if [ "$(docker ps -aq -f name=$CONTAINER_NAME)" ]; then
                         docker rm -f $CONTAINER_NAME
@@ -28,18 +28,18 @@ pipeline {
             }
         }
 
-        stage("🔨 Build Docker Image") {
+        stage("Build Docker Image") {
             steps {
-                echo "🔨 Building Docker image..."
+                echo "Building Docker image..."
                 script {
                     docker.build("${IMAGE_NAME}:latest", ".")
                 }
             }
         }
 
-        stage("🚀 Deploy") {
+        stage("Deploy") {
             steps {
-                echo "🚀 Running container from built image..."
+                echo "Running container from built image..."
                 sh """
                     docker run -d \
                         --name $CONTAINER_NAME \
@@ -52,7 +52,7 @@ pipeline {
 
     post {
         always {
-            echo "✅ Pipeline completed!"
+            echo "Pipeline completed!"
         }
     }
 }
